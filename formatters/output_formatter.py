@@ -1,33 +1,61 @@
 class OutputFormatter:
     @staticmethod
     def format_analysis(analysis):
-        """Analiz sonuçlarını okunabilir bir formata dönüştürür"""
+        """Analiz sonuçlarını markdown formatında döndürür"""
         if "error" in analysis:
-            return f"Hata: {analysis['error']}"
+            return f"## Hata\n{analysis['error']}"
 
         formatted_output = []
-        formatted_output.append("\nKod Analiz Raporu")
-        formatted_output.append("=================")
+        formatted_output.append("# Kod Analiz Raporu\n")
         
-        sections = [
-            ("Proje Amaci", "proje_amaci", "-----------"),
-            ("Proje Ozeti", "proje_ozeti", "-----------"),
-            ("Kullanilan Teknolojiler", "kullanilan_teknolojiler", "---------------------"),
-            ("Genel Degerlendirme", "genel_degerlendirme", "------------------"),
-            ("Guclu Yonler", "guclu_yonler", "-----------"),
-            ("Iyilestirme Alanlari", "iyilestirme_alanlari", "------------------"),
-            ("Kod Ornekleri ve Oneriler", "kod_ornekleri", "-----------------------"),
-            ("Guvenlik Onerileri", "guvenlik_onerileri", "-----------------"),
-            ("Performans Onerileri", "performans_onerileri", "------------------")
-        ]
-
-        for title, key, separator in sections:
-            formatted_output.append(f"\n{title}")
-            formatted_output.append(separator)
-            if isinstance(analysis[key], list):
-                for item in analysis[key]:
-                    formatted_output.append(f"* {item}")
-            else:
-                formatted_output.append(analysis[key])
-
+        # Proje Amacı
+        formatted_output.append("## Proje Amacı")
+        formatted_output.append(analysis['proje_amaci'])
+        formatted_output.append("")
+        
+        # Proje Özeti
+        formatted_output.append("## Proje Özeti")
+        formatted_output.append(analysis['proje_ozeti'])
+        formatted_output.append("")
+        
+        # Kullanılan Teknolojiler
+        formatted_output.append("## Kullanılan Teknolojiler")
+        for tech in analysis['kullanilan_teknolojiler']:
+            formatted_output.append(f"* {tech}")
+        formatted_output.append("")
+        
+        # Genel Değerlendirme
+        formatted_output.append("## Genel Değerlendirme")
+        formatted_output.append(analysis['genel_degerlendirme'])
+        formatted_output.append("")
+        
+        # Güçlü Yönler
+        formatted_output.append("## Güçlü Yönler")
+        for item in analysis['guclu_yonler']:
+            formatted_output.append(f"* {item}")
+        formatted_output.append("")
+        
+        # İyileştirme Alanları
+        formatted_output.append("## İyileştirme Alanları")
+        for item in analysis['iyilestirme_alanlari']:
+            formatted_output.append(f"* {item}")
+        formatted_output.append("")
+        
+        # Kod Örnekleri ve Öneriler
+        formatted_output.append("## Kod Örnekleri ve Öneriler")
+        for item in analysis['kod_ornekleri']:
+            formatted_output.append(f"* {item}")
+        formatted_output.append("")
+        
+        # Güvenlik Önerileri
+        formatted_output.append("## Güvenlik Önerileri")
+        for item in analysis['guvenlik_onerileri']:
+            formatted_output.append(f"* {item}")
+        formatted_output.append("")
+        
+        # Performans Önerileri
+        formatted_output.append("## Performans Önerileri")
+        for item in analysis['performans_onerileri']:
+            formatted_output.append(f"* {item}")
+        
         return "\n".join(formatted_output)
