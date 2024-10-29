@@ -1,0 +1,38 @@
+.markdown-content {
+    line-height: 1.6;
+}
+
+.markdown-content h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 1em 0;
+}
+
+.markdown-content h2 {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0.8em 0;
+}
+
+.markdown-content pre {
+    background-color: #f4f4f4;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.markdown-content code {
+    background-color: #f4f4f4;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.markdown-content ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+}
+
+.markdown-content ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+}

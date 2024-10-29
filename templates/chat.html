@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+        <!-- GitHub URL Input -->
+        <div class="p-4 border-b" id="urlInput" {% if conversation_id %}style="display:none"{% endif %}>
+            <form id="urlForm" class="flex gap-2">
+                <input type="text" id="githubUrl" placeholder="GitHub URL'sini girin" 
+                       class="flex-1 p-2 border rounded" required>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Analiz Et
+                </button>
+            </form>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="h-[600px] flex flex-col">
+            <!-- Messages -->
+            <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                {% if history %}
+                    {% for msg in history.messages %}
+                        <div class="message user mb-4">
+                            <div class="bg-blue-100 p-3 rounded-lg">
+                                {{ msg.message }}
+                            </div>
+                        </div>
+                        <div class="message assistant mb-4">
+                            <div class="bg-gray-100 p-3 rounded-lg markdown-content">
+                                {{ msg.response }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t p-4">
+                <form id="chatForm" class="flex gap-2">
+                    <input type="text" id="userMessage" placeholder="Projeniz hakkında soru sorun..." 
+                           class="flex-1 p-2 border rounded" {% if not conversation_id %}disabled{% endif %}>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                            {% if not conversation_id %}disabled{% endif %}>
+                        Gönder
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
