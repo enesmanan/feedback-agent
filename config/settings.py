@@ -1,7 +1,10 @@
+import os
 import sys
 import codecs
 
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
+
+DEFAULT_AI_SERVICE = os.getenv('DEFAULT_AI_SERVICE', 'auto')
 
 OPENAI_MODEL = "gpt-4o-mini"
 TEMPERATURE = 0.7
