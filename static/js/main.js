@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const messagesDiv = document.getElementById('messages');
-    let conversationId = null;
+    // URL'den conversation_id'yi al
+    const urlParams = new URLSearchParams(window.location.pathname);
+    let conversationId = document.getElementById('chatForm').dataset.conversationId || null;
 
     // Markdown içeriğini render et ve Prism.js'i başlat
     function renderMarkdownAndInitPrism(element) {
@@ -24,12 +26,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mevcut markdown içeriğini işle
     document.querySelectorAll('.markdown-content').forEach(renderMarkdownAndInitPrism);
 
+    // Mesajları en alta kaydır
+    if (messagesDiv) {
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
     function addMessage(sender, content) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender} mb-4`;
         
         const contentDiv = document.createElement('div');
-        contentDiv.className = sender === 'user' ? 'bg-blue-100 p-3 rounded-lg' : 'bg-gray-100 p-3 rounded-lg markdown-content';
+        contentDiv.className = sender === 'user' ? 
+            'bg-blue-100 p-3 rounded-lg mx-auto max-w-3xl' : 
+            'bg-white shadow-lg p-4 rounded-lg mx-auto max-w-3xl markdown-content';
         
         if (sender === 'assistant') {
             contentDiv.textContent = content;
@@ -44,67 +53,89 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // GitHub URL form submit
-    document.getElementById('urlForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const url = document.getElementById('githubUrl').value;
-        
-        try {
-            const response = await fetch('/analyze', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ url: url })
-            });
+    const urlForm = document.getElementById('urlForm');
+    if (urlForm) {
+        urlForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const url = document.getElementById('githubUrl').value;
             
-            const data = await response.json();
-            conversationId = data.conversation_id;
-            
-            // URL input'u gizle
-            document.getElementById('urlInput').style.display = 'none';
-            
-            // Chat input'u aktif et
-            document.getElementById('userMessage').disabled = false;
-            document.getElementById('chatForm').querySelector('button').disabled = false;
-            
-            // Analiz sonucunu göster
-            addMessage('assistant', data.response);
-            
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Bir hata oluştu!');
-        }
-    });
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                const data = await response.json();
+                conversationId = data.conversation_id;
+                
+                // URL input'u gizle
+                document.getElementById('urlInput').style.display = 'none';
+                
+                // Chat input'u aktif et
+                document.getElementById('userMessage').disabled = false;
+                document.getElementById('chatForm').querySelector('button').disabled = false;
+                
+                // Conversation ID'yi forma ekle
+                document.getElementById('chatForm').dataset.conversationId = conversationId;
+                
+                // Analiz sonucunu göster
+                addMessage('assistant', data.response);
+                
+                // URL'i güncelle (sayfa yenilenmeden)
+                window.history.pushState({}, '', `/history/${conversationId}`);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Bir hata oluştu!');
+            }
+        });
+    }
 
     // Chat form submit
-    document.getElementById('chatForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const messageInput = document.getElementById('userMessage');
-        const message = messageInput.value;
-        
-        if (!message.trim()) return;
-        
-        addMessage('user', message);
-        messageInput.value = '';
-        
-        try {
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: message,
-                    conversation_id: conversationId
-                })
-            });
+    const chatForm = document.getElementById('chatForm');
+    if (chatForm) {
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const messageInput = document.getElementById('userMessage');
+            const message = messageInput.value;
             
-            const data = await response.json();
-            addMessage('assistant', data.response);
+            if (!message.trim()) return;
             
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Bir hata oluştu!');
-        }
-    });
+            const currentConversationId = this.dataset.conversationId || conversationId;
+            
+            if (!currentConversationId) {
+                alert('Geçerli bir konuşma bulunamadı!');
+                return;
+            }
+            
+            addMessage('user', message);
+            messageInput.value = '';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_id: currentConversationId
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                addMessage('assistant', data.response);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Bir hata oluştu!');
+            }
+        });
+    }
 });

@@ -42,6 +42,62 @@
     margin-bottom: 1em;
 }
 
+/* Mevcut stiller korunacak, aşağıdaki stiller eklenecek */
+
+/* Font ailesi */
+.font-space-grotesk {
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Sidebar stilleri */
+#sidebar {
+    box-shadow: 4px 0 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+#sidebar .history-item {
+    transition: all 0.2s ease;
+}
+
+#sidebar .history-item:hover {
+    transform: translateX(4px);
+}
+
+/* Gradient başlık */
+.gradient-title {
+    background: linear-gradient(135deg, #4F46E5, #2563EB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Message boxes */
+.message .markdown-content {
+    transition: transform 0.2s ease;
+}
+
+.message .markdown-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Scrollbar */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+
 /* Prism.js özelleştirmeleri */
 pre[class*="language-"] {
     background: #f5f5f5;  /* Açık gri arka plan */

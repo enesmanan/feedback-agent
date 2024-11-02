@@ -70,8 +70,9 @@ def create_app():
 
     @app.route('/')
     def home():
-        """Home page route"""
-        return render_template('chat.html')
+        """Home page route with conversation history"""
+        histories = chat_history.get_all_conversations()
+        return render_template('chat.html', histories=histories)
 
     @app.route('/analyze', methods=['POST'])
     def analyze():
@@ -135,26 +136,37 @@ def create_app():
         """Get chat history for a conversation"""
         try:
             history = chat_history.get_conversation_history(conversation_id)
-            return render_template('chat.html', history=history, conversation_id=conversation_id)
+            histories = chat_history.get_all_conversations()
+            return render_template('chat.html', 
+                                 history=history, 
+                                 histories=histories,
+                                 conversation_id=conversation_id)
         except Exception as e:
             return str(e), 400
 
     @app.errorhandler(404)
     def not_found_error(error):
         """Handle 404 errors"""
-        return render_template('chat.html', error="Page not found"), 404
+        histories = chat_history.get_all_conversations()
+        return render_template('chat.html', 
+                             error="Page not found",
+                             histories=histories), 404
 
     @app.errorhandler(500)
     def internal_error(error):
         """Handle 500 errors"""
-        return render_template('chat.html', error="Internal server error"), 500
+        histories = chat_history.get_all_conversations()
+        return render_template('chat.html', 
+                             error="Internal server error",
+                             histories=histories), 500
 
     return app
 
 def init_db():
     """Initialize the database"""
     with app.app_context():
-        chat_history = ChatHistory()
+        db_path = app.config['DATABASE']
+        chat_history = ChatHistory(db_path)
         chat_history.init_db()
 
 app = create_app()
