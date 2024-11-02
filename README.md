@@ -1,6 +1,7 @@
 # Code Feedback Agent
 
-![Python Version](https://img.shields.io/badge/python-3.10.6-blue.svg) ![Flask Version](https://img.shields.io/badge/flask-3.0.3-green.svg) ![OpenAI](https://img.shields.io/badge/OpenAI-GPT4-orange.svg) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.10.6-blue.svg) ![Flask Version](https://img.shields.io/badge/flask-3.0.3-green.svg) ![OpenAI](https://img.shields.io/badge/OpenAI-GPT4-orange.svg) ![Gemini](https://img.shields.io/badge/Gemini-pro-purple.svg) ![License](https://img.shields.io/badge/license-MIT-blue.svg) 
+
 
 Code Feedback Agent is an interactive web application that analyzes your Python projects on GitHub and provides AI-powered feedback. You can receive detailed analysis of your project and chat with the bot to improve your code.
 
@@ -16,14 +17,14 @@ Code Feedback Agent is an interactive web application that analyzes your Python 
 ## 🛠️ Technologies
 
 - **Backend**: Flask
-- **AI**: OpenAI GPT-4
+- **AI**: OpenAI GPT-4 & Gemini Pro
 - **Database**: SQLite
 - **Frontend**: HTML, CSS (Tailwind), JavaScript
 
 ## 📋 Prerequisites
 
 - Python 3.10+
-- OpenAI API key
+- OpenAI & Gemini API key
 - Git & pip
 
 ## 🔧 Installation
@@ -49,6 +50,8 @@ pip install -r requirements.txt
 4. Set `.env` file:
 ```env
 OPENAI_API_KEY="api-key-here"
+GEMINI_API_KEY="api-key-here"
+DEFAULT_AI_SERVICE=auto
 ```
 
 5. Run the application:
