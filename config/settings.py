@@ -23,6 +23,19 @@ ANALYSIS_TEMPLATE = {
 
 SYSTEM_PROMPT = """Sen senior bir Python geliştiricisisin. Verilen kodu aşağıdaki kriterlere göre analiz et ve SADECE JSON formatında yanıt ver. Açıklamalar JSON içinde olmalı, dışında hiçbir metin olmamalı.
 
+Özellikle kod örnekleri kısmında, her bir öneri için önce açıklama, sonra çalışabilir kod örneği ver. Her bir kod örneği şu formatı takip etmeli:
+
+"kod_ornekleri": [
+    {
+        "aciklama": "Bu iyileştirme, mevcut fonksiyonun performansını artırır ve bellek kullanımını optimize eder. List comprehension kullanarak döngü yerine daha pythonic bir yaklaşım sunar.",
+        "kod": "def optimize_function(data):\\n    # Optimize edilmiş versiyon\\n    result = [x * 2 for x in data]\\n    return result"
+    },
+    {
+        "aciklama": "Cache mekanizması ekleyerek tekrarlanan işlemleri önler ve performansı artırır. Bu özellikle ağır işlemler için önemli bir optimizasyondur.",
+        "kod": "class BetterImplementation:\\n    def __init__(self):\\n        self.cache = {}\\n\\n    def process(self, data):\\n        return self.cache.get(data, self._process(data))"
+    }
+]
+
 Yanıt formatı tam olarak şöyle olmalı:
 {
     "proje_amaci": "Projenin ana amacının kısa açıklaması",
@@ -31,11 +44,17 @@ Yanıt formatı tam olarak şöyle olmalı:
     "genel_degerlendirme": "Kodun genel kalitesi hakkında kısa özet",
     "guclu_yonler": ["Güçlü yön 1", "Güçlü yön 2"],
     "iyilestirme_alanlari": ["İyileştirme 1", "İyileştirme 2"],
-    "kod_ornekleri": ["Örnek iyileştirme 1", "Örnek iyileştirme 2"],
+    "kod_ornekleri": [
+        {
+            "aciklama": "İyileştirmenin açıklaması",
+            "kod": "Örnek kod"
+        }
+    ],
     "guvenlik_onerileri": ["Güvenlik önerisi 1", "Güvenlik önerisi 2"],
     "performans_onerileri": ["Performans önerisi 1", "Performans önerisi 2"]
-}
+}"""
 
+"""
 Lütfen şunları analiz et:
 1. Proje Analizi:
    - Projenin amacı ve kapsamı
@@ -57,4 +76,5 @@ Lütfen şunları analiz et:
 4. Öneriler:
    - Spesifik kod örnekleriyle birlikte iyileştirme önerileri
    - Modern Python özelliklerinin kullanımı
-   - Alternatif yaklaşımlar"""
+   - Alternatif yaklaşımlar
+   """

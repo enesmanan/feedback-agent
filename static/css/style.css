@@ -15,24 +15,186 @@
 }
 
 .markdown-content pre {
-    background-color: #f4f4f4;
-    padding: 1em;
-    border-radius: 4px;
-    overflow-x: auto;
+    margin: 1em 0;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(211, 205, 205, 0.1);
 }
 
 .markdown-content code {
-    background-color: #f4f4f4;
-    padding: 0.2em 0.4em;
+    font-family: 'Fira Code', monospace;
     border-radius: 3px;
+}
+
+.markdown-content p code {
+    background-color: rgba(211, 205, 205, 0.1);
+    padding: 0.2em 0.4em;
 }
 
 .markdown-content ul {
     list-style-type: disc;
     margin-left: 1.5em;
+    margin-bottom: 1em;
 }
 
 .markdown-content ol {
     list-style-type: decimal;
     margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+/* Prism.js özelleştirmeleri */
+pre[class*="language-"] {
+    background: #f5f5f5;  /* Açık gri arka plan */
+    margin: 1em 0;
+    padding: 1em;
+    overflow: auto;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: #f5f5f5;  /* Açık gri arka plan */
+}
+
+code[class*="language-"] {
+    color: #333;  /* Koyu gri ana metin rengi */
+    text-shadow: none;  /* Text shadow'u kaldır */
+}
+
+/* Sözdizimi renklendirme */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #666;  /* Yorumlar için daha koyu gri */
+    font-style: italic;
+}
+
+.token.function {
+    color: #0050b3;  /* Fonksiyonlar için koyu mavi */
+}
+
+.token.keyword {
+    color: #8250df;  /* Anahtar kelimeler için mor */
+    font-weight: 500;
+}
+
+.token.string {
+    color: #0a7343;  /* String'ler için koyu yeşil */
+}
+
+.token.number {
+    color: #cd5c5c;  /* Sayılar için kırmızımsı */
+}
+
+.token.operator {
+    color: #0550ae;  /* Operatörler için mavi */
+}
+
+.token.class-name {
+    color: #886ce4;  /* Sınıf isimleri için mor */
+}
+
+.token.variable {
+    color: #953800;  /* Değişkenler için turuncu-kahve */
+}
+
+.token.property {
+    color: #0550ae;  /* Property'ler için mavi */
+}
+
+.token.punctuation {
+    color: #24292f;  /* Noktalama işaretleri için koyu gri */
+}
+
+/* Kod bloğu container stil güncellemesi */
+.code-toolbar {
+    position: relative;
+    margin: 1em 0;
+}
+
+pre[class*="language-"] {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Copy buton stilleri */
+.toolbar-item button {
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+    font-size: 0.8em;
+    padding: 0.4em 0.8em;
+    background: rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toolbar-item button:hover {
+    background: rgba(0,0,0,0.15);
+    border-color: rgba(0,0,0,0.15);
+}
+
+/* Copy success message */
+div.code-toolbar > .toolbar .toolbar-item > button:focus {
+    outline: none;
+}
+
+div.code-toolbar > .toolbar .toolbar-item > button[data-copy-state="copy"] {
+    background: rgba(0,0,0,0.1);
+}
+
+div.code-toolbar > .toolbar .toolbar-item > button[data-copy-state="copied"] {
+    background: #28a745;
+    color: white;
+}
+
+/* Seçim rengi */
+pre[class*="language-"]::-moz-selection, 
+pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, 
+code[class*="language-"] ::-moz-selection {
+    background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection, 
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, 
+code[class*="language-"] ::selection {
+    background: #b3d4fc;
+}
+
+/* Kod bloğu içindeki satır yüksekliği */
+pre[class*="language-"] > code {
+    line-height: 1.5;
+    font-size: 0.9em;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+/* Kod bloğu hover efekti */
+pre[class*="language-"]:hover {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+/* Özel scrollbar */
+pre[class*="language-"]::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
