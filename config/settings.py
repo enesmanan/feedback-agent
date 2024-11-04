@@ -21,7 +21,7 @@ ANALYSIS_TEMPLATE = {
     "performans_onerileri": ["Belirlenemedi"]
 }
 
-SYSTEM_PROMPT = """Sen senior bir Python geliştiricisisin. Verilen kodu aşağıdaki kriterlere göre analiz et ve SADECE JSON formatında yanıt ver. Açıklamalar JSON içinde olmalı, dışında hiçbir metin olmamalı.
+SYSTEM_PROMPT = """Sen senior bir Python geliştiricisisin. Verilen kodu ve Markdown dokümantasyonunu aşağıdaki kriterlere göre analiz et ve SADECE JSON formatında yanıt ver. Açıklamalar JSON içinde olmalı, dışında hiçbir metin olmamalı.
 
 Özellikle kod örnekleri kısmında, her bir öneri için önce açıklama, sonra çalışabilir kod örneği ver. Her bir kod örneği şu formatı takip etmeli:
 

@@ -33,13 +33,13 @@ class CodeAnalyzer:
             genai.configure(api_key=api_keys["GEMINI_API_KEY"])
             self.client = genai.GenerativeModel('gemini-pro')
 
-    def analyze_code(self, code):
+    def analyze_code(self, code, notebook_data=None):
         """Main analysis function"""
         try:
             if self.service == "openai":
-                analysis = self._analyze_with_openai(code)
+                analysis = self._analyze_with_openai(code, notebook_data)
             else:
-                analysis = self._analyze_with_gemini(code)
+                analysis = self._analyze_with_gemini(code, notebook_data)
             
             # Validate and clean the analysis results
             analysis = self._validate_and_clean_analysis(analysis)
@@ -49,17 +49,40 @@ class CodeAnalyzer:
             print(f"Analysis error: {str(e)}")
             return self.ANALYSIS_TEMPLATE
 
-    def _analyze_with_openai(self, code):
+    def _analyze_with_openai(self, code, notebook_data=None):
         """Analyze code using OpenAI's GPT-4"""
         try:
+            # Prepare context with code and documentation if available
+            context = code
+            if notebook_data:
+                markdown_sections = []
+                if notebook_data.get('documentation'):
+                    doc = notebook_data['documentation']
+                    if doc['project_description']:
+                        markdown_sections.append(f"# Project Description\n{doc['project_description']}")
+                    if doc['usage_examples']:
+                        markdown_sections.append(f"# Usage Examples\n{' '.join(doc['usage_examples'])}")
+                    if doc['parameters']:
+                        markdown_sections.append(f"# Parameters\n{' '.join(doc['parameters'])}")
+                    if doc['notes']:
+                        markdown_sections.append(f"# Notes\n{' '.join(doc['notes'])}")
+
+                if markdown_sections:
+                    context = f"""# Documentation
+{' '.join(markdown_sections)}
+
+# Code
+{code}"""
+
             prompt = f"""Lütfen aşağıdaki Python kodunu detaylı olarak analiz et.
+            {' Kod ile birlikte verilen dokümantasyonu da dikkate al.' if notebook_data else ''}
             Yanıtını kesinlikle belirtilen JSON formatında ver ve hiçbir ek açıklama ekleme.
             Her bölüm için detaylı ve yapıcı geri bildirimler sağla.
 
             {SYSTEM_PROMPT}
 
-            Analiz edilecek kod:
-            {code}"""
+            Analiz edilecek içerik:
+            {context}"""
 
             response = self.client.chat.completions.create(
                 model=OPENAI_MODEL,
@@ -67,7 +90,7 @@ class CodeAnalyzer:
                     {"role": "system", "content": "Sen deneyimli bir Python kod analisti ve geliştiricisisin."},
                     {"role": "user", "content": prompt}
                 ],
-                #temperature=0.5,
+                temperature=0.3,
                 response_format={"type": "json_object"}
             )
 
@@ -78,68 +101,59 @@ class CodeAnalyzer:
             print(f"OpenAI API error: {str(e)}")
             return self.ANALYSIS_TEMPLATE
 
-    def _analyze_with_gemini(self, code):
+    def _analyze_with_gemini(self, code, notebook_data=None):
         """Analyze code using Google's Gemini"""
         try:
+            # Prepare context with code and documentation if available
+            context = code
+            if notebook_data:
+                markdown_sections = []
+                if notebook_data.get('documentation'):
+                    doc = notebook_data['documentation']
+                    if doc['project_description']:
+                        markdown_sections.append(f"# Project Description\n{doc['project_description']}")
+                    if doc['usage_examples']:
+                        markdown_sections.append(f"# Usage Examples\n{' '.join(doc['usage_examples'])}")
+                    if doc['parameters']:
+                        markdown_sections.append(f"# Parameters\n{' '.join(doc['parameters'])}")
+                    if doc['notes']:
+                        markdown_sections.append(f"# Notes\n{' '.join(doc['notes'])}")
+
+                if markdown_sections:
+                    context = f"""# Documentation
+{' '.join(markdown_sections)}
+
+# Code
+{code}"""
+
             prompt = f"""Lütfen aşağıdaki Python kodunu analiz et ve sonucu TAM OLARAK aşağıdaki JSON formatında döndür:
 
-{{
-    "proje_amaci": "Projenin ana amacını açıklayan detaylı metin",
-    "proje_ozeti": "Projenin nasıl çalıştığını anlatan kapsamlı açıklama",
-    "kullanilan_teknolojiler": ["Kullanılan", "Teknolojilerin", "Listesi"],
-    "genel_degerlendirme": "Kodun genel kalitesi hakkında kapsamlı değerlendirme",
-    "guclu_yonler": [
-        "Güçlü yön 1",
-        "Güçlü yön 2"
-    ],
-    "iyilestirme_alanlari": [
-        "İyileştirme önerisi 1",
-        "İyileştirme önerisi 2"
-    ],
-    "kod_ornekleri": [
-        {{
-            "aciklama": "İlk örnek kodun ne yaptığını açıklayan detaylı metin",
-            "kod": "def ornek_kod():\\n    return 'örnek'"
-        }}
-    ],
-    "guvenlik_onerileri": [
-        "Güvenlik önerisi 1",
-        "Güvenlik önerisi 2"
-    ],
-    "performans_onerileri": [
-        "Performans önerisi 1",
-        "Performans önerisi 2"
-    ]
-}}
+            {SYSTEM_PROMPT}
 
-Analiz edilecek kod:
-{code}
+            Analiz edilecek içerik:
+            {context}
 
-Önemli kurallar:
-1. Yanıt MUTLAKA geçerli bir JSON olmalı
-2. Tüm alanlar doldurulmalı, boş bırakılmamalı
-3. Özellikle kod_ornekleri bölümünde çalışabilir Python kodu verilmeli
-4. Her kod örneği için detaylı açıklama eklenmeli
-5. Her bölüm için kapsamlı analiz yapılmalı
-6. Yanıtta JSON dışında hiçbir ek metin olmamalı"""
+            Önemli kurallar:
+            1. Yanıt MUTLAKA geçerli bir JSON olmalı
+            2. Tüm alanlar doldurulmalı, boş bırakılmamalı
+            3. Dokümantasyondaki bilgiler de dikkate alınmalı
+            4. Her kod örneği için detaylı açıklama eklenmeli
+            5. Her bölüm için kapsamlı analiz yapılmalı
+            6. Yanıtta JSON dışında hiçbir ek metin olmamalı"""
 
             response = self.client.generate_content(prompt)
             content = response.text.strip()
             
-            # JSON başlangıcını ve sonunu bul
             json_start = content.find('{')
             json_end = content.rfind('}') + 1
             
             if json_start >= 0 and json_end > json_start:
                 content = content[json_start:json_end]
             
-            # JSON'ı parse et ve içeriği doğrula
             try:
                 analysis = json.loads(content)
-                analysis = self._fix_gemini_output(analysis)
-                return analysis
+                return self._fix_gemini_output(analysis)
             except json.JSONDecodeError:
-                print("Gemini JSON parse error")
                 return self._extract_analysis_from_text(content)
                 
         except Exception as e:

@@ -24,12 +24,16 @@ class CodeFeedbackSystem:
             
             # Handle Jupyter notebooks
             if github_url.endswith('.ipynb'):
-                content = self.notebook_handler.extract_notebook_code(content)
-            elif not github_url.endswith('.py'):
+                notebook_data = self.notebook_handler.extract_notebook_code(content)
+                analysis = self.analyzer.analyze_code(
+                    code=notebook_data['code'], 
+                    notebook_data=notebook_data
+                )
+            elif github_url.endswith('.py'):
+                analysis = self.analyzer.analyze_code(code=content)
+            else:
                 raise ValueError("Unsupported file format. Only .py and .ipynb files are supported.")
             
-            # Analyze code
-            analysis = self.analyzer.analyze_code(content)
             return self.formatter.format_analysis(analysis)
             
         except Exception as e:
